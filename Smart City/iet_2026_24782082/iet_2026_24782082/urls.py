@@ -8,6 +8,7 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 from django.contrib import admin
 from django.urls import path
 from django.http import HttpResponse
+from django.urls import path, include
 
 
 def welcome(request):
@@ -17,4 +18,7 @@ def welcome(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('welcome/', welcome),
+    path('', include('main_app.urls')),
+    path('about/', include('about.urls')),
+    path('contacts/', include('contacts.urls')),
 ]

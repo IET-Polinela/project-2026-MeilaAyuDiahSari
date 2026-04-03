@@ -1,0 +1,22 @@
+<h2>Daftar Laporan</h2>
+
+{% for report in reports %}
+    <div style="margin-bottom:20px;">
+
+        <p><b>Judul:</b> {{ report.title }}</p>
+        <p><b>Kategori:</b> {{ report.category }}</p>
+        <p><b>Deskripsi:</b> {{ report.description }}</p>
+        <p><b>Lokasi:</b> {{ report.location }}</p>
+
+        <p>
+            <a href="/update/{{ report.id }}">Edit</a> |
+            <a href="/delete/{{ report.id }}">Hapus</a>
+        </p>
+
+        <hr>
+
+    </div>
+{% endfor %}
+
+<br>
+<a href="/">⬅ Kembali ke Home</a>

@@ -1,0 +1,10 @@
+<h2>Detail Laporan</h2>
+
+<p><b>Judul:</b> {{ report.title }}</p>
+<p><b>Kategori:</b> {{ report.category }}</p>
+<p><b>Deskripsi:</b> {{ report.description }}</p>
+<p><b>Lokasi:</b> {{ report.location }}</p>
+<p><b>Status:</b> {{ report.status }}</p>
+
+<br>
+<a href="{% url 'report_list' %}">⬅ Kembali ke Daftar</a>

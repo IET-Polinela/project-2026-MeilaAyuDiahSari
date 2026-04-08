@@ -1,45 +1,52 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.urls import reverse_lazy
+from django.views import View
+
 from .models import Report
 from .forms import ReportForm
 
-# View yang sudah ada
+
 def home(request):
     return render(request, 'meila_app/home.html')
 
 
-def add_report(request):
-    if request.method == "POST":
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('report_list')
-    else:
-        form = ReportForm()
-
-    return render(request, 'meila_app/add_report.html', {'form': form})
+class ReportListView(ListView):
+    model = Report
+    template_name = 'meila_app/report_list.html'
+    context_object_name = 'reports'
 
 
-def report_list(request):
-    reports = Report.objects.all()
-    return render(request, 'meila_app/report_list.html', {'reports': reports})
+class ReportCreateView(CreateView):
+    model = Report
+    form_class = ReportForm
+    template_name = 'meila_app/add_report.html'
+    success_url = reverse_lazy('report_list')
 
-def update_report(request, id):
-    report = get_object_or_404(Report, id=id)
-    form = ReportForm(request.POST or None, instance=report)
 
-    if form.is_valid():
-        form.save()
+class ReportDetailView(DetailView):
+    model = Report
+    template_name = 'meila_app/report_detail.html'
+    context_object_name = 'report'
+
+
+class ReportUpdateView(UpdateView):
+    model = Report
+    form_class = ReportForm
+    template_name = 'meila_app/update_report.html'
+    success_url = reverse_lazy('report_list')
+
+
+class ReportDeleteView(DeleteView):
+    model = Report
+    template_name = 'meila_app/delete_report.html'
+    success_url = reverse_lazy('report_list')
+
+
+class ReportUpdateStatusView(View):
+    def post(self, request, pk):
+        report = get_object_or_404(Report, pk=pk)
+        new_status = request.POST.get('status')
+        report.status = new_status
+        report.save()
         return redirect('report_list')
-
-    return render(request, 'meila_app/update_report.html', {'form': form})
-
-
-# DELETE
-def delete_report(request, id):
-    report = get_object_or_404(Report, id=id)
-
-    if request.method == 'POST':
-        report.delete()
-        return redirect('report_list')
-
-    return render(request, 'meila_app/delete_report.html', {'report': report})

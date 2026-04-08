@@ -1,21 +1,59 @@
 <h2>Daftar Laporan</h2>
 
 {% for report in reports %}
-    <div style="margin-bottom:20px;">
+    <div style="margin-bottom:20px; border:1px solid #ccc; padding:10px;">
 
         <p><b>Judul:</b> {{ report.title }}</p>
         <p><b>Kategori:</b> {{ report.category }}</p>
         <p><b>Deskripsi:</b> {{ report.description }}</p>
         <p><b>Lokasi:</b> {{ report.location }}</p>
 
+        <!-- STATUS -->
+        <p><b>Status:</b> {{ report.status }}</p>
+
+        <!-- CRUD ACTION -->
         <p>
-            <a href="/update/{{ report.id }}">Edit</a> |
-            <a href="/delete/{{ report.id }}">Hapus</a>
+            <a href="{% url 'report_detail' report.pk %}">Detail</a> |
+            <a href="{% url 'update_report' report.pk %}">Edit</a> |
+            <a href="{% url 'delete_report' report.pk %}">Hapus</a>
+        </p>
+
+        <!-- WORKFLOW BUTTON -->
+        <p>
+            {% if report.status == 'REPORTED' %}
+            <form method="post" action="{% url 'update_status' report.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="VERIFIED">
+                <button type="submit">Verify</button>
+            </form>
+            {% endif %}
+
+            {% if report.status == 'VERIFIED' %}
+            <form method="post" action="{% url 'update_status' report.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="IN_PROGRESS">
+                <button type="submit">Process</button>
+            </form>
+            {% endif %}
+
+            {% if report.status == 'IN_PROGRESS' %}
+            <form method="post" action="{% url 'update_status' report.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="RESOLVED">
+                <button type="submit">Resolve</button>
+            </form>
+            {% endif %}
+
+            {% if report.status == 'RESOLVED' %}
+                <p><i>Laporan sudah selesai ✅</i></p>
+            {% endif %}
         </p>
 
         <hr>
 
     </div>
+{% empty %}
+    <p>Tidak ada laporan.</p>
 {% endfor %}
 
 <br>

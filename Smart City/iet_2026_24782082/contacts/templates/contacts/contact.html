@@ -1,105 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Contacts</title>
+{% extends 'base.html' %}
 
-<style>
-body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color:#ffe4e9;
+{% block content %}
 
-    display:flex;
-    flex-direction:column;
-    min-height:100vh;
-}
+<div class="card-custom text-center">
 
-header{
-    background-color:#a64254;
-    color:white;
-    text-align:center;
-    padding:25px;
-    font-size:28px;
-    font-weight:bold;
-}
-
-nav{
-    background:#ffc2cc;
-    text-align:center;
-    padding:12px;
-}
-
-nav a{
-    margin:0 15px;
-    text-decoration:none;
-    font-weight:bold;
-    color:#7a2e3a;
-}
-
-nav a:hover{
-    color:#a64254;
-}
-
-.container{
-    padding:60px 20px;
-    text-align:center;
-    flex:1;
-}
-
-.box{
-    background:white;
-    width:60%;
-    margin:auto;
-    padding:40px;
-    border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-
-h1{
-    color:#a64254;
-}
-
-p{
-    font-size:18px;
-}
-
-footer{
-    margin-top:80px;
-    background:#ffc2cc;
-    text-align:center;
-    padding:15px;
-}
-</style>
-
-</head>
-
-<body>
-
-<header>
-Website Wisata Lampung Selatan
-</header>
-
-<nav>
-<a href="/">Home</a>
-<a href="/about/meila">About</a>
-<a href="/contacts/">Contacts</a>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Contact</li>
+  </ol>
 </nav>
 
-<div class="container">
-<div class="box">
+    <h2 class="mb-4">Kontak</h2>
 
-<h1>Contact Us</h1>
+    <p>
+        Jika Anda memiliki pertanyaan atau ingin memberikan laporan,
+        silakan hubungi kami melalui informasi berikut:
+    </p>
 
-<p>Email : wisata@lampungselatan.com</p>
-<p>Instagram : @wisatalampung</p>
-<p>Phone : 08123456789</p>
+    <p><b>Email:</b> smartcitylampung@gmail.com</p>
+    <p><b>Telepon:</b> 0812-3456-7890</p>
+    <p><b>Alamat:</b> Lampung Selatan, Provinsi Lampung</p>
 
 </div>
-</div>
 
-<footer>
-© 2026 Praktikum Internet Programming
-</footer>
-
-</body>
-</html>
+{% endblock %}

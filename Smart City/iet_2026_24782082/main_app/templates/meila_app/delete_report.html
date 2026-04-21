@@ -1,12 +1,40 @@
-<h2>Hapus Laporan</h2>
+{% extends 'base.html' %}
 
-<p>Yakin mau hapus?</p>
-<p><b>{{ report.title }}</b></p>
+{% block content %}
 
-<form method="POST">
-    {% csrf_token %}
-    <button type="submit">Ya, Hapus</button>
-</form>
+<div class="card-custom text-center">
 
-<br>
-<a href="/reports/">Batal</a>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/reports/">Reports</a></li>
+    <li class="breadcrumb-item active">Hapus Laporan</li>
+  </ol>
+</nav>
+
+    <h2 class="mb-3">Hapus Laporan</h2>
+
+    <p>Apakah kamu yakin ingin menghapus laporan berikut?</p>
+
+    <p class="fw-bold fs-5 text-danger">
+        {{ report.title }}
+    </p>
+
+    <p class="text-muted">
+        Data yang sudah dihapus tidak dapat dikembalikan.
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger"
+            onclick="return confirm('Yakin ingin menghapus laporan ini?')">
+            Ya, Hapus
+        </button>
+        <a href="/reports/" class="btn btn-secondary">
+            Batal
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

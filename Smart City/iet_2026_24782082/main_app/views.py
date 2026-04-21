@@ -5,6 +5,7 @@ from django.views import View
 
 from .models import Report
 from .forms import ReportForm
+from django.contrib import messages
 
 
 def home(request):
@@ -23,6 +24,10 @@ class ReportCreateView(CreateView):
     template_name = 'meila_app/add_report.html'
     success_url = reverse_lazy('report_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, "Laporan berhasil ditambahkan!")
+        return super().form_valid(form)
+
 
 class ReportDetailView(DetailView):
     model = Report
@@ -36,11 +41,19 @@ class ReportUpdateView(UpdateView):
     template_name = 'meila_app/update_report.html'
     success_url = reverse_lazy('report_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, "Laporan berhasil diperbarui!")
+        return super().form_valid(form)
+
 
 class ReportDeleteView(DeleteView):
     model = Report
     template_name = 'meila_app/delete_report.html'
     success_url = reverse_lazy('report_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Laporan berhasil dihapus!")
+        return super().form_valid(form)
 
 
 class ReportUpdateStatusView(View):
@@ -49,4 +62,7 @@ class ReportUpdateStatusView(View):
         new_status = request.POST.get('status')
         report.status = new_status
         report.save()
+
+        messages.success(request, f"Status berhasil diubah ke {new_status}!")
+
         return redirect('report_list')

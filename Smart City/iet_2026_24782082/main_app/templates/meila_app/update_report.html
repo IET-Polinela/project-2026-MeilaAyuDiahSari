@@ -1,10 +1,52 @@
-<h2>Edit Laporan</h2>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card-custom">
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/reports/">Reports</a></li>
+    <li class="breadcrumb-item active">Edit Laporan</li>
+  </ol>
+</nav>
+
+<h2 class="mb-4">Edit Laporan</h2>
 
 <form method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update</button>
+
+    <div class="mb-3">
+        {{ form.title.label_tag }}
+        {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.category.label_tag }}
+        {{ form.category }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.location.label_tag }}
+        {{ form.location }}
+    </div>
+
+    <button type="submit" class="btn btn-custom">
+        Update
+    </button>
+
+    <a href="/reports/" class="btn btn-secondary">
+        Kembali
+    </a>
+
 </form>
 
-<br>
-<a href="/reports/">⬅ Kembali</a>
+</div>
+
+{% endblock %}

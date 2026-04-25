@@ -1,26 +1,58 @@
+<!-- contacts/contact.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 
-<div class="card-custom text-center">
+<div class="card-custom p-5">
 
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active">Contact</li>
-  </ol>
-</nav>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item">
+                <a href="/">Home</a>
+            </li>
+            <li class="breadcrumb-item active">Contact</li>
+        </ol>
+    </nav>
 
-    <h2 class="mb-4">Kontak</h2>
+    <h2 class="text-center fw-bold mb-4">
+        Kontak Kami
+    </h2>
 
-    <p>
+    <p class="text-center text-muted mb-5">
         Jika Anda memiliki pertanyaan atau ingin memberikan laporan,
-        silakan hubungi kami melalui informasi berikut:
+        silakan hubungi kami melalui informasi berikut.
     </p>
 
-    <p><b>Email:</b> smartcitylampung@gmail.com</p>
-    <p><b>Telepon:</b> 0812-3456-7890</p>
-    <p><b>Alamat:</b> Lampung Selatan, Provinsi Lampung</p>
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="border rounded-4 p-4 bg-light h-100 text-center">
+                <h5 class="mb-3">Email</h5>
+                <p class="mb-0 text-muted">
+                    smartcitylampung@gmail.com
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="border rounded-4 p-4 bg-light h-100 text-center">
+                <h5 class="mb-3">Telepon</h5>
+                <p class="mb-0 text-muted">
+                    0812-3456-7890
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="border rounded-4 p-4 bg-light h-100 text-center">
+                <h5 class="mb-3">Alamat</h5>
+                <p class="mb-0 text-muted">
+                    Lampung Selatan, Provinsi Lampung
+                </p>
+            </div>
+        </div>
+
+    </div>
 
 </div>
 

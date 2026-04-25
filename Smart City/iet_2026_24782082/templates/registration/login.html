@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-75">
+    <div class="col-md-7 col-lg-5">
+
+        <div class="card-custom mt-4 p-4">
+
+            <!-- HEADER -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold mb-2">Welcome</h2>
+                <p class="text-muted mb-0">
+                    Silakan login untuk melanjutkan
+                </p>
+            </div>
+
+            <!-- FORM -->
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Username
+                    </label>
+                    {{ form.username }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        Password
+                    </label>
+                    {{ form.password }}
+                </div>
+
+                <!-- BUTTON -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-custom py-2">
+                        Login
+                    </button>
+                </div>
+            </form>
+
+            <!-- FOOTER -->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    Belum punya akun?
+                </small>
+                <a href="{% url 'register' %}" class="fw-semibold text-decoration-none">
+                    Register
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .min-vh-75 {
+        min-height: 75vh;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #f0b8c2;
+        border-radius: 10px;
+        outline: none;
+        transition: 0.3s ease;
+    }
+
+    input:focus {
+        border-color: #a64254;
+        box-shadow: 0 0 0 3px rgba(166, 66, 84, 0.15);
+    }
+
+    .card-custom {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 8px 20px rgba(182, 77, 119, 0.18);
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 10px;
+        transition: 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        transform: translateY(-1px);
+    }
+</style>
+{% endblock %}

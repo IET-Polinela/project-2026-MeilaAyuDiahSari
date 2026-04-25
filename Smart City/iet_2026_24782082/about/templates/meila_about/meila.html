@@ -1,35 +1,58 @@
+<!-- about/meila.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 
-<div class="card-custom">
+<div class="card-custom p-5">
 
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active">About</li>
-  </ol>
-</nav>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item">
+                <a href="/">Home</a>
+            </li>
+            <li class="breadcrumb-item active">About</li>
+        </ol>
+    </nav>
 
-    <h1 class="text-center mb-4">Pesona Lampung Selatan</h1>
+    <h1 class="text-center fw-bold mb-4">
+        Pesona Lampung Selatan
+    </h1>
 
-    <p>
-    Lampung Selatan memiliki berbagai destinasi wisata yang sangat indah
-    dan menarik untuk dikunjungi. Mulai dari pantai yang eksotis,
-    pegunungan yang sejuk, hingga budaya lokal yang sangat unik.
+    <p class="fs-5 text-muted text-center mb-5">
+        Keindahan alam, budaya, dan keramahan masyarakat menjadikan
+        Lampung Selatan sebagai destinasi wisata favorit di Provinsi Lampung.
     </p>
 
-    <p>
-    Beberapa tempat wisata terkenal di Lampung Selatan antara lain
-    Pantai Sebalang, Pantai Mutun, dan Gunung Rajabasa
-    yang menawarkan pemandangan alam yang memukau.
-    </p>
+    <div class="row g-4">
 
-    <p>
-    Dengan keindahan alam dan keramahan masyarakatnya,
-    Lampung Selatan menjadi salah satu destinasi wisata
-    yang wajib dikunjungi di Provinsi Lampung.
-    </p>
+        <div class="col-md-4">
+            <div class="border rounded-4 p-4 bg-light h-100 text-center">
+                <h5 class="mb-3">Pantai Eksotis</h5>
+                <p class="mb-0 text-muted">
+                    Menyuguhkan pemandangan laut yang indah dan suasana tenang.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="border rounded-4 p-4 bg-light h-100 text-center">
+                <h5 class="mb-3">Gunung Rajabasa</h5>
+                <p class="mb-0 text-muted">
+                    Tempat wisata alam dengan udara sejuk dan panorama hijau.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="border rounded-4 p-4 bg-light h-100 text-center">
+                <h5 class="mb-3">Budaya Lokal</h5>
+                <p class="mb-0 text-muted">
+                    Tradisi dan keramahan masyarakat yang khas Lampung Selatan.
+                </p>
+            </div>
+        </div>
+
+    </div>
 
 </div>
 

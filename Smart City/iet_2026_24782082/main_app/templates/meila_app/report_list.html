@@ -17,13 +17,21 @@
 
 <h2 class="mb-4">Daftar Laporan</h2>
 
+<div class="mb-3">
+    <input
+        type="text"
+        id="searchInput"
+        class="form-control"
+        placeholder="Cari judul atau lokasi laporan..."
+    >
+</div>
+
 <a href="{% url 'add_report' %}" class="btn text-white mb-4" style="background:#a64254;">
     + Tambah Laporan
 </a>
 
 {% if reports %}
 
-<!-- (RESPONSIVE TABLE) -->
 <div class="table-responsive">
 
 <table class="table table-striped table-bordered">
@@ -36,13 +44,12 @@
         </tr>
     </thead>
 
-    <tbody>
+    <tbody id="reportTable">
         {% for report in reports %}
         <tr>
             <td>{{ report.title }}</td>
             <td>{{ report.location }}</td>
 
-            <!-- STATUS BADGE -->
             <td>
                 {% if report.status == "REPORTED" %}
                     <span class="badge bg-danger">Reported</span>
@@ -55,63 +62,61 @@
                 {% endif %}
             </td>
 
-            <!-- AKSI + WORKFLOW -->
-            <!-- FLEX BIAR RESPONSIVE -->
-            <td class="d-flex flex-wrap gap-2">
-
-                <!-- CRUD -->
-                <a href="{% url 'report_detail' report.pk %}" class="btn btn-sm btn-info me-2">
-                    Detail
-                </a>
-
-                <a href="{% url 'update_report' report.pk %}" class="btn btn-sm btn-warning me-2">
-                    Edit
-                </a>
-
-                <a href="{% url 'delete_report' report.pk %}" 
-                   class="btn btn-sm btn-danger me-5"
-                   onclick="return confirm('Yakin ingin menghapus laporan ini?')">
-                    Hapus
-                </a>
-
-                <!-- WORKFLOW -->
-                {% if report.status == 'REPORTED' %}
-                <form method="post" action="{% url 'update_status' report.pk %}" 
-                      style="display:inline;"
-                      onsubmit="return confirm('Yakin ingin mengubah status ke VERIFIED?')">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="VERIFIED">
-                    <button class="btn btn-sm btn-success">
-                        Verify
+            <td class="action-cell">
+                <div class="action-group">
+                    <button
+                        class="btn btn-sm btn-info detailBtn"
+                        data-id="{{ report.pk }}">
+                        Detail
                     </button>
-                </form>
 
-                {% elif report.status == 'VERIFIED' %}
-                <form method="post" action="{% url 'update_status' report.pk %}" 
-                      style="display:inline;"
-                      onsubmit="return confirm('Yakin ingin memproses laporan ini?')">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="IN_PROGRESS">
-                    <button class="btn btn-sm btn-primary">
-                        Process
-                    </button>
-                </form>
+                    <a href="{% url 'update_report' report.pk %}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
 
-                {% elif report.status == 'IN_PROGRESS' %}
-                <form method="post" action="{% url 'update_status' report.pk %}" 
-                      style="display:inline;"
-                      onsubmit="return confirm('Yakin ingin menyelesaikan laporan ini?')">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="RESOLVED">
-                    <button class="btn btn-sm btn-dark">
-                        Resolve
-                    </button>
-                </form>
+                    <a href="{% url 'delete_report' report.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Yakin ingin menghapus laporan ini?')">
+                        Hapus
+                    </a>
 
-                {% else %}
-                    <span class="text-success fw-bold ms-2">✔ Selesai</span>
-                {% endif %}
+                    {% if report.status == 'REPORTED' %}
+                    <form method="post" action="{% url 'update_status' report.pk %}"
+                          class="action-form"
+                          onsubmit="return confirm('Yakin ingin mengubah status ke VERIFIED?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="VERIFIED">
+                        <button class="btn btn-sm btn-success">
+                            Verify
+                        </button>
+                    </form>
 
+                    {% elif report.status == 'VERIFIED' %}
+                    <form method="post" action="{% url 'update_status' report.pk %}"
+                          class="action-form"
+                          onsubmit="return confirm('Yakin ingin memproses laporan ini?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="IN_PROGRESS">
+                        <button class="btn btn-sm btn-primary">
+                            Process
+                        </button>
+                    </form>
+
+                    {% elif report.status == 'IN_PROGRESS' %}
+                    <form method="post" action="{% url 'update_status' report.pk %}"
+                          class="action-form"
+                          onsubmit="return confirm('Yakin ingin menyelesaikan laporan ini?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="RESOLVED">
+                        <button class="btn btn-sm btn-dark">
+                            Resolve
+                        </button>
+                    </form>
+
+                    {% else %}
+                        <span class="text-success fw-bold">✔ Selesai</span>
+                    {% endif %}
+                </div>
             </td>
 
         </tr>
@@ -120,7 +125,6 @@
 
 </table>
 
-<!-- PENUTUP RESPONSIVE -->
 </div>
 
 {% else %}
@@ -142,5 +146,128 @@
 {% endif %}
 
 </div>
+
+<!-- MODAL -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Laporan</h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="modalContent">
+                Loading...
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- SEARCH LEBIH RINGAN -->
+<script>
+let typingTimer;
+
+function highlightSearch(text, keyword) {
+    if (!keyword) return text;
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+    return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+}
+
+document.getElementById('searchInput').addEventListener('keyup', function () {
+
+    clearTimeout(typingTimer);
+
+    let keyword = this.value.toLowerCase().trim();
+
+    typingTimer = setTimeout(function () {
+
+        let rows = document.querySelectorAll('#reportTable tr');
+
+        rows.forEach(function(row) {
+            const titleCell = row.querySelector('td:nth-child(1)');
+            const locationCell = row.querySelector('td:nth-child(2)');
+            const titleText = titleCell.textContent.trim();
+            const locationText = locationCell.textContent.trim();
+            const rowText = `${titleText} ${locationText}`.toLowerCase();
+
+            if (keyword && rowText.includes(keyword)) {
+                row.style.display = '';
+                titleCell.innerHTML = highlightSearch(titleText, keyword);
+                locationCell.innerHTML = highlightSearch(locationText, keyword);
+            } else if (!keyword) {
+                row.style.display = '';
+                titleCell.textContent = titleText;
+                locationCell.textContent = locationText;
+            } else {
+                row.style.display = 'none';
+                titleCell.textContent = titleText;
+                locationCell.textContent = locationText;
+            }
+        });
+
+    }, 300);
+
+});
+</script>
+
+<script>
+document.querySelectorAll('.detailBtn').forEach(btn => {
+
+    btn.addEventListener('click', function() {
+
+        let id = this.dataset.id;
+
+        fetch(`/detail-json/${id}/`)
+        .then(response => response.json())
+        .then(data => {
+
+            const statusMap = {
+                REPORTED: { label: 'Reported', style: 'reported' },
+                VERIFIED: { label: 'Verified', style: 'verified' },
+                IN_PROGRESS: { label: 'In Progress', style: 'in-progress' },
+                RESOLVED: { label: 'Resolved', style: 'resolved' }
+            };
+
+            const statusInfo = statusMap[data.status] || { label: data.status, style: 'reported' };
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-key">Judul</div>
+                    <div class="detail-value">${data.title}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Kategori</div>
+                    <div class="detail-value">${data.category}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Lokasi</div>
+                    <div class="detail-value">${data.location}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Status</div>
+                    <div class="detail-value">
+                        <span class="detail-badge ${statusInfo.style}">${statusInfo.label}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Deskripsi</div>
+                    <div class="detail-value">${data.description.replace(/\n/g, '<br>')}</div>
+                </div>
+            `;
+
+            new bootstrap.Modal(
+                document.getElementById('detailModal')
+            ).show();
+
+        });
+
+    });
+
+});
+</script>
 
 {% endblock %}

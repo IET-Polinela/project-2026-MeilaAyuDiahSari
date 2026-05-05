@@ -1,8 +1,178 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card-custom text-center p-5">
-    <h1>Dashboard</h1>
-    <p>Halaman Dashboard Lab 7</p>
+
+<div class="card-custom p-5">
+
+    <div class="d-flex flex-column flex-sm-row dashboard-summary-header">
+        <div>
+            <h2 class="mb-2 fw-bold">
+                Dashboard Statistik Laporan
+            </h2>
+            <p class="mb-0">
+                Ringkas laporan terbaru dalam 5 item terakhir dan buka daftar lengkap dengan satu klik.
+            </p>
+        </div>
+        <a href="{% url 'report_list' %}" class="btn btn-custom btn-lg">
+            View All Reports
+        </a>
+    </div>
+
+    <!-- CHART -->
+    <div class="row g-4 mb-5 align-items-stretch">
+
+        <div class="col-lg-6">
+            <div class="p-4 shadow-sm rounded-4 bg-white h-100">
+                <h5 class="text-center mb-4 fw-semibold">
+                    Distribusi Status
+                </h5>
+                <div style="height:320px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="p-4 shadow-sm rounded-4 bg-white h-100">
+                <h5 class="text-center mb-4 fw-semibold">
+                    Distribusi Kategori
+                </h5>
+                <div style="height:320px;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="row g-4">
+
+        <div class="col-lg-6">
+            <div class="p-4 shadow-sm rounded-4 bg-white h-100 dashboard-table-card">
+                <div class="table-dashboard-heading">
+                    <div>
+                        <div class="dashboard-card-title fw-semibold text-danger">
+                            5 Laporan Terakhir REPORTED
+                        </div>
+                        <div class="dashboard-card-desc">
+                            Laporan yang baru masuk dan belum diproses.
+                        </div>
+                    </div>
+                    <span class="badge bg-danger bg-opacity-10 text-danger">5 terakhir</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>Judul</th>
+                                <th>Lokasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportedTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="p-4 shadow-sm rounded-4 bg-white h-100 dashboard-table-card">
+                <div class="table-dashboard-heading">
+                    <div>
+                        <div class="dashboard-card-title fw-semibold text-success">
+                            5 Laporan Terakhir RESOLVED
+                        </div>
+                        <div class="dashboard-card-desc">
+                            Laporan yang sudah selesai dan ditutup.
+                        </div>
+                    </div>
+                    <span class="badge bg-success bg-opacity-10 text-success">5 terakhir</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Judul</th>
+                                <th>Lokasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resolvedTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+fetch('/dashboard/chart-data/')
+.then(response => response.json())
+.then(data => {
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'pie',
+        data: {
+            labels: data.status_labels,
+            datasets: [{
+                data: data.status_values
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'bar',
+        data: {
+            labels: data.category_labels,
+            datasets: [{
+                label: 'Jumlah Laporan',
+                data: data.category_values,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    let reportedHTML = '';
+    data.reported.forEach(item => {
+        reportedHTML += `
+        <tr>
+            <td>${item.title}</td>
+            <td>${item.location}</td>
+        </tr>
+        `;
+    });
+    document.getElementById('reportedTable').innerHTML = reportedHTML;
+
+    let resolvedHTML = '';
+    data.resolved.forEach(item => {
+        resolvedHTML += `
+        <tr>
+            <td>${item.title}</td>
+            <td>${item.location}</td>
+        </tr>
+        `;
+    });
+    document.getElementById('resolvedTable').innerHTML = resolvedHTML;
+
+});
+</script>
+
 {% endblock %}

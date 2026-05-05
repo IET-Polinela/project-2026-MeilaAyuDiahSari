@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
@@ -107,3 +108,18 @@ class ReportUpdateStatusView(View):
 
         messages.success(request, f"Status berhasil diubah ke {new_status}!")
         return redirect('report_list')
+
+
+# =========================
+# DETAIL JSON
+# =========================
+def report_detail_json(request, pk):
+    report = get_object_or_404(Report, pk=pk)
+
+    return JsonResponse({
+        'title': report.title,
+        'category': report.category,
+        'location': report.location,
+        'status': report.status,
+        'description': report.description,
+    })

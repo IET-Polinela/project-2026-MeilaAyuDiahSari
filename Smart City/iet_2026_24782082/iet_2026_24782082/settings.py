@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'contacts',
     'usermanagement_24782082',
     'dashboard_24782082',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

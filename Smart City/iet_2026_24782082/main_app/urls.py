@@ -7,6 +7,7 @@ from .views import (
     ReportDeleteView,
     ReportDetailView,
     ReportUpdateStatusView,
+    ReportSubmitView,
     report_detail_json,
 )
 
@@ -29,5 +30,10 @@ urlpatterns = [
         'update-status/<int:pk>/',
         ReportUpdateStatusView.as_view(),
         name='update_status'
+    ),
+    path(
+        'submit/<int:pk>/',
+        ReportSubmitView.as_view(),
+        name='submit_report'
     ),
 ]

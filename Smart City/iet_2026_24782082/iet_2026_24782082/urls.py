@@ -30,6 +30,10 @@ urlpatterns = [
     path('', include('usermanagement_24782082.urls')),
     path('dashboard/', include('dashboard_24782082.urls')),
     path('api/', include('main_app.api_urls')),
+    path(
+    'api/',
+    include('usermanagement_24782082.api_urls')
+    ),
 
     # JWT TOKEN
     path(

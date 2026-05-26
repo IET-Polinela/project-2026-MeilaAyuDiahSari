@@ -4,6 +4,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from django.urls import reverse_lazy
 from django.views import View
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Report
 from .forms import ReportForm
@@ -109,6 +110,27 @@ class ReportUpdateStatusView(View):
         messages.success(request, f"Status berhasil diubah ke {new_status}!")
         return redirect('report_list')
 
+class ReportSubmitView(View):
+    def post(self, request, pk):
+        if not request.user.is_authenticated:
+            messages.error(request, "Silakan login terlebih dahulu.")
+            return redirect('login')
+
+        report = get_object_or_404(Report, pk=pk)
+
+        if report.reporter != request.user:
+            messages.error(request, "Anda hanya bisa submit laporan milik sendiri.")
+            return redirect('report_list')
+
+        if report.status != 'DRAFT':
+            messages.error(request, "Hanya laporan DRAFT yang bisa disubmit.")
+            return redirect('report_list')
+
+        report.status = 'REPORTED'
+        report.save()
+
+        messages.success(request, "Laporan berhasil disubmit ke admin.")
+        return redirect('report_list')
 
 # =========================
 # DETAIL JSON

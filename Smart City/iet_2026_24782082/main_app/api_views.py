@@ -18,11 +18,7 @@ class ReportViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return Report.objects.exclude(status='DRAFT')
 
-        return Report.objects.filter(
-            ~Q(status='DRAFT')
-            |
-            Q(reporter=user, status='DRAFT')
-        )
+        return Report.objects.filter(reporter=user)
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:

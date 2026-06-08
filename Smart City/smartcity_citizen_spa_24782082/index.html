@@ -59,7 +59,7 @@
             color: #7a2e3a;
             font-size: 0.95rem;
         }
-        /* BUTTON STYLES - match main project theme */
+
         .btn {
             border-radius: 10px;
             font-weight: 600;
@@ -67,12 +67,13 @@
         }
 
         .btn-primary {
-            background-color: #a64254; /* theme pink */
+            background-color: #a64254;
             border-color: #a64254;
             color: #fff;
             box-shadow: 0 10px 30px rgba(166, 66, 84, 0.12);
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.6rem;
             font-size: 1rem;
         }
@@ -84,12 +85,406 @@
             color: #fff;
         }
 
-        /* A slightly larger CTA used in SPA pages */
         .btn-cta {
             padding: 12px 22px;
             border-radius: 14px;
             font-size: 1.05rem;
             font-weight: 700;
+        }
+
+        .modal-header-custom {
+            background-color: #a64254;
+            color: white;
+        }
+
+        .btn-outline-custom {
+            border-color: #a64254;
+            color: #a64254;
+        }
+
+        .btn-outline-custom:hover {
+            background-color: #a64254;
+            color: white;
+        }
+
+        .summary-status-card {
+            background: #fff7f9;
+            border: 1px solid rgba(166, 66, 84, 0.12);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 8px 18px rgba(166, 66, 84, 0.10);
+        }
+
+        .summary-status-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 700;
+            color: #2f2f2f;
+            margin-bottom: 14px;
+        }
+
+        .summary-status-title i {
+            color: #a64254;
+            font-size: 18px;
+        }
+
+        .summary-status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            color: #333333;
+            font-size: 0.95rem;
+        }
+
+        .summary-status-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-status-label i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .summary-status-badge {
+            min-width: 25px;
+            height: 24px;
+            padding: 0 8px;
+            border-radius: 999px;
+            color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-draft {
+            color: #6c757d;
+        }
+
+        .icon-reported {
+            color: #dc3545;
+        }
+
+        .icon-verified {
+            color: #ffc107;
+        }
+
+        .icon-progress {
+            color: #0d6efd;
+        }
+
+        .icon-done {
+            color: #198754;
+        }
+
+        .badge-draft {
+            background-color: #6c757d;
+        }
+
+        .badge-reported {
+            background-color: #dc3545;
+        }
+
+        .badge-verified {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .badge-progress {
+            background-color: #0d6efd;
+        }
+
+        .badge-done {
+            background-color: #198754;
+        }
+
+        .auth-wrapper {
+            min-height: calc(100vh - 210px);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 55px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 17px;
+            padding: 30px 32px;
+            box-shadow: 0 8px 24px rgba(166, 66, 84, 0.12);
+            border: 1px solid rgba(166, 66, 84, 0.08);
+        }
+
+        .auth-title {
+            color: #a64254;
+            font-weight: 800;
+            font-size: 1.65rem;
+            margin-bottom: 6px;
+        }
+
+        .auth-subtitle {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .auth-input {
+            border-radius: 8px;
+            padding: 10px 12px;
+            border: 1px solid #e7c7ce;
+        }
+
+        .auth-input:focus {
+            border-color: #a64254;
+            box-shadow: 0 0 0 0.2rem rgba(166, 66, 84, 0.15);
+        }
+
+        .auth-main-btn {
+            padding: 11px 18px;
+            border-radius: 9px;
+        }
+
+        .auth-link-text {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .auth-link {
+            color: #a64254;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-link:hover {
+            color: #842b45;
+            text-decoration: underline;
+        }
+
+        .nav-auth-btn {
+            min-width: 95px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .nav-auth-login {
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            background: transparent;
+        }
+
+        .nav-auth-login:hover {
+            color: #a64254;
+            background: #ffffff;
+        }
+
+        .nav-auth-register {
+            color: #a64254;
+            border: 1px solid #ffffff;
+            background: #ffffff;
+        }
+
+        .nav-auth-register:hover {
+            color: #842b45;
+            background: #ffe4e9;
+        }
+
+        .nav-user-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-user-info {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .nav-user-info i {
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #a64254;
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        .search-input {
+            width: 100%;
+            min-height: 46px;
+            padding-left: 44px;
+            padding-right: 14px;
+            border-radius: 14px;
+            border: 1px solid #e7a8b5;
+            background: #fff7f9;
+            color: #333333;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 5px 14px rgba(166, 66, 84, 0.08);
+        }
+
+        .search-input::placeholder {
+            color: #b97886;
+            font-weight: 500;
+        }
+
+        .search-input:focus {
+            border-color: #a64254;
+            background: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(166, 66, 84, 0.15);
+        }
+
+        .search-highlight {
+            background-color: #ffc2cc;
+            color: #842b45;
+            font-weight: 800;
+            padding: 0 3px;
+            border-radius: 5px;
+        }
+
+        .custom-pagination-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            padding: 10px 0;
+        }
+
+        .pagination-pages {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn,
+        .pagination-nav {
+            border: 1px solid #e7a8b5;
+            background: #fff7f9;
+            color: #a64254;
+            min-width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 14px rgba(166, 66, 84, 0.10);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .pagination-nav {
+            gap: 6px;
+            padding: 0 14px;
+            min-width: auto;
+        }
+
+        .pagination-btn:hover,
+        .pagination-nav:hover {
+            background: #ffe4e9;
+            border-color: #a64254;
+            color: #842b45;
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn.active {
+            background: #a64254;
+            border-color: #a64254;
+            color: #ffffff;
+            box-shadow: 0 7px 16px rgba(166, 66, 84, 0.26);
+        }
+
+        .pagination-nav.disabled,
+        .pagination-nav:disabled {
+            background: #ffffff;
+            border-color: #f0c6cf;
+            color: #c99aa4;
+            cursor: not-allowed;
+            opacity: 0.65;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .pagination-ellipsis {
+            min-width: 28px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #a64254;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 576px) {
+            .nav-user-wrapper {
+                gap: 6px;
+            }
+
+            .nav-user-info {
+                padding: 7px 10px;
+                font-size: 0.82rem;
+            }
+
+            .search-input {
+                min-height: 44px;
+                font-size: 0.86rem;
+                padding-left: 42px;
+            }
+
+            .search-icon {
+                left: 14px;
+                font-size: 0.95rem;
+            }
+
+            .custom-pagination-wrapper {
+                gap: 7px;
+            }
+
+            .pagination-btn,
+            .pagination-nav {
+                min-width: 34px;
+                height: 34px;
+                border-radius: 9px;
+                font-size: 0.82rem;
+            }
+
+            .pagination-nav {
+                padding: 0 10px;
+            }
         }
     </style>
 </head>
@@ -112,9 +507,111 @@
         </div>
     </main>
 
+    <!-- MODAL FORM LAPORAN -->
+    <div class="modal fade" id="reportModal" tabindex="-1"
+         aria-labelledby="reportModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title fw-bold" id="reportModalLabel">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Buat Laporan Baru
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <form id="reportForm">
+
+                        <div class="mb-3">
+                            <label for="reportTitle" class="form-label fw-semibold">
+                                Judul Laporan
+                            </label>
+                            <input
+                                type="text"
+                                id="reportTitle"
+                                class="form-control"
+                                placeholder="Contoh: Lampu Jalan Mati"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reportCategory" class="form-label fw-semibold">
+                                Kategori
+                            </label>
+                            <input
+                                type="text"
+                                id="reportCategory"
+                                class="form-control"
+                                placeholder="Contoh: Infrastruktur"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reportLocation" class="form-label fw-semibold">
+                                Lokasi
+                            </label>
+                            <input
+                                type="text"
+                                id="reportLocation"
+                                class="form-control"
+                                placeholder="Contoh: Bandar Lampung"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reportDescription" class="form-label fw-semibold">
+                                Deskripsi
+                            </label>
+                            <textarea
+                                id="reportDescription"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Tuliskan detail laporan..."
+                                required></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button
+                                type="button"
+                                class="btn btn-outline-custom fw-bold px-4"
+                                id="btnDraft">
+                                Simpan Draft
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-primary fw-bold px-4"
+                                id="btnSubmitReport">
+                                Ajukan
+                                <i class="bi bi-send-fill ms-1"></i>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <footer>
         © 2026 Smart City Lampung Selatan. Semua hak dilindungi.
     </footer>
+
+    <!-- Bootstrap JS Bundle wajib untuk Modal -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>

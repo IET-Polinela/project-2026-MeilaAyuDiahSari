@@ -1,6 +1,5 @@
 const API_BASE_URL = 'http://103.151.63.88:8002';
 
-
 async function requestAPI(endpoint, method = 'GET', bodyData = null) {
     const accessToken = localStorage.getItem('access_token');
 
@@ -14,26 +13,40 @@ async function requestAPI(endpoint, method = 'GET', bodyData = null) {
 
     const config = {
         method: method,
-        headers: headers
+        headers: headers,
+        mode: 'cors'
     };
 
     if (bodyData) {
         config.body = JSON.stringify(bodyData);
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-
-    let data = null;
-
     try {
-        data = await response.json();
-    } catch (error) {
-        data = null;
-    }
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
-    return {
-        status: response.status,
-        ok: response.ok,
-        data: data
-    };
+        let data = null;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            data = null;
+        }
+
+        return {
+            status: response.status,
+            ok: response.ok,
+            data: data
+        };
+
+    } catch (error) {
+        console.error('Gagal menghubungi API:', error);
+
+        return {
+            status: 0,
+            ok: false,
+            data: {
+                message: 'Gagal menghubungi server API. Kemungkinan Mixed Content, CORS, atau koneksi API diblokir browser.'
+            }
+        };
+    }
 }

@@ -9,6 +9,8 @@ from django.contrib import admin
 from django.urls import path
 from django.http import HttpResponse
 from django.urls import path, include
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django_scalar.views import scalar_viewer
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -35,6 +37,16 @@ urlpatterns = [
     include('usermanagement_24782082.api_urls')
     ),
 
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+
+    path(
+        'api/docs/swagger/',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui'
+    ),
+
+    path('api/docs/scalar/', scalar_viewer, name='scalar-ui'),
+        
     # JWT TOKEN
     path(
         'api/token/',

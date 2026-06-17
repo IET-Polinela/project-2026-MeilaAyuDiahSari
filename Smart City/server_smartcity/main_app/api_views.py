@@ -9,6 +9,8 @@ from .models import Report
 from .serializers import ReportSerializer
 from .permissions import IsOwnerDraftPermission
 
+from drf_spectacular.utils import extend_schema
+
 
 class ReportPagination(PageNumberPagination):
     """Pagination untuk membatasi jumlah laporan per halaman."""
@@ -85,6 +87,7 @@ class ReportViewSet(viewsets.ModelViewSet):
             'status': report.status
         })
 
+    @extend_schema(exclude=True)
     @action(detail=True, methods=['patch'])
     def update_status(self, request, pk=None):
         report = self.get_object()

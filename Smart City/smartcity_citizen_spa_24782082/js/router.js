@@ -188,6 +188,7 @@ const routes = {
             <section class="col-12 col-lg-6">
                 <div class="d-flex gap-2 mb-3">
                     <button
+                        id="tabMyReports"
                         class="btn btn-primary tab-btn"
                         data-tab="my_reports">
                         <i class="bi bi-person-lines-fill me-1"></i>
@@ -195,6 +196,7 @@ const routes = {
                     </button>
 
                     <button
+                        id="tabFeedKota"
                         class="btn btn-outline-secondary tab-btn"
                         data-tab="feed">
                         <i class="bi bi-rss-fill me-1"></i>
@@ -243,6 +245,24 @@ const routes = {
 function handleRouting() {
     const hash = window.location.hash || '#login';
     const appContent = document.getElementById('app-content');
+    const accessToken = localStorage.getItem('access_token');
+
+    // AUTH GUARD:
+    // Kondisi 1: Tidak ada token → akses #dashboard → redirect ke #login
+    if (!accessToken) {
+        if (hash === '#dashboard') {
+            window.location.hash = '#login';
+            return;
+        }
+    }
+
+    // Kondisi 2: Ada token → akses #login atau #register → redirect ke #dashboard
+    if (accessToken) {
+        if (hash === '#login' || hash === '#register') {
+            window.location.hash = '#dashboard';
+            return;
+        }
+    }
 
     appContent.innerHTML = routes[hash] || routes['#login'];
 

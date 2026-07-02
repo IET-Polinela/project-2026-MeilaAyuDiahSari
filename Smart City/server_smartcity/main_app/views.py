@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
@@ -8,19 +8,29 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Report
 from .forms import ReportForm
+from django.db.models import Q
 
 
 def home(request):
-    return render(request, 'meila_app/home.html')
+    return render(request, 'main_app/home.html')
 
 
 # =========================
-# REPORT LIST (SEMUA BOLEH)
+# REPORT LIST (LOGIN ONLY + ADMIN ONLY)
 # =========================
-class ReportListView(ListView):
+class ReportListView(LoginRequiredMixin, ListView):
     model = Report
-    template_name = 'meila_app/report_list.html'
+    template_name = 'main_app/report_list.html'
     context_object_name = 'reports'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        if not request.user.is_admin:
+            return redirect('home')
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 # =========================
@@ -29,108 +39,119 @@ class ReportListView(ListView):
 class ReportCreateView(CreateView):
     model = Report
     form_class = ReportForm
-    template_name = 'meila_app/add_report.html'
+    template_name = 'main_app/add_report.html'
     success_url = reverse_lazy('report_list')
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated or not request.user.is_admin:
-            messages.error(request, "Akses Ditolak")
-            return redirect('report_list')
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        if not request.user.is_admin:
+            return redirect('home')
+
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, "Laporan berhasil ditambahkan!")
+        form.instance.reporter = self.request.user
         return super().form_valid(form)
 
 
 # =========================
-# DETAIL (SEMUA BOLEH)
-# =========================
-class ReportDetailView(DetailView):
-    model = Report
-    template_name = 'meila_app/report_detail.html'
-    context_object_name = 'report'
-
-
-# =========================
-# UPDATE (ADMIN ONLY)
+# UPDATE (BUKAN UNTUK ADMIN — hanya citizen pemilik laporan)
 # =========================
 class ReportUpdateView(UpdateView):
     model = Report
     form_class = ReportForm
-    template_name = 'meila_app/update_report.html'
+    template_name = 'main_app/update_report.html'
     success_url = reverse_lazy('report_list')
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated or not request.user.is_admin:
-            messages.error(request, "Akses Ditolak")
-            return redirect('report_list')
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        if request.user.is_staff or request.user.is_admin:
+            return HttpResponseForbidden()
+
+        if not request.user.is_admin:
+            return redirect('home')
+
         return super().dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        messages.success(self.request, "Laporan berhasil diperbarui!")
-        return super().form_valid(form)
-
-
 # =========================
-# DELETE (ADMIN ONLY)
+# DELETE (BUKAN UNTUK ADMIN — hanya citizen pemilik laporan)
 # =========================
 class ReportDeleteView(DeleteView):
     model = Report
-    template_name = 'meila_app/delete_report.html'
+    template_name = 'main_app/delete_report.html'
     success_url = reverse_lazy('report_list')
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated or not request.user.is_admin:
-            messages.error(request, "Akses Ditolak")
-            return redirect('report_list')
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        if request.user.is_staff or request.user.is_admin:
+            return HttpResponseForbidden()
+
+        return redirect('home')
+
+
+# =========================
+# DETAIL (ADMIN ONLY)
+# =========================
+class ReportDetailView(DetailView):
+    model = Report
+    template_name = 'main_app/report_detail.html'
+    context_object_name = 'report'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        if not request.user.is_admin:
+            return redirect('home')
+
         return super().dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        messages.success(self.request, "Laporan berhasil dihapus!")
-        return super().form_valid(form)
-
 
 # =========================
-# UPDATE STATUS (ADMIN ONLY)
+# UPDATE STATUS (POST ONLY)
 # =========================
 class ReportUpdateStatusView(View):
-    def post(self, request, pk):
+    def post(self, request, pk, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
 
-        if not request.user.is_authenticated or not request.user.is_admin:
-            messages.error(request, "Akses Ditolak")
-            return redirect('report_list')
+        if not request.user.is_admin:
+            return redirect('home')
 
         report = get_object_or_404(Report, pk=pk)
         new_status = request.POST.get('status')
 
-        report.status = new_status
-        report.save()
+        if new_status in ['VERIFIED', 'IN_PROGRESS', 'RESOLVED']:
+            report.status = new_status
+            report.save()
 
-        messages.success(request, f"Status berhasil diubah ke {new_status}!")
-        return redirect('report_list')
+        return redirect('report_detail', pk=pk)
 
-class ReportSubmitView(View):
-    def post(self, request, pk):
-        if not request.user.is_authenticated:
-            messages.error(request, "Silakan login terlebih dahulu.")
-            return redirect('login')
 
+# =========================
+# SUBMIT REPORT (POST ONLY)
+# =========================
+class ReportSubmitView(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
         report = get_object_or_404(Report, pk=pk)
 
         if report.reporter != request.user:
-            messages.error(request, "Anda hanya bisa submit laporan milik sendiri.")
-            return redirect('report_list')
+            return HttpResponseForbidden()
 
         if report.status != 'DRAFT':
-            messages.error(request, "Hanya laporan DRAFT yang bisa disubmit.")
-            return redirect('report_list')
+            return HttpResponseForbidden()
 
         report.status = 'REPORTED'
         report.save()
-
-        messages.success(request, "Laporan berhasil disubmit ke admin.")
+        
         return redirect('report_list')
+
 
 # =========================
 # DETAIL JSON
@@ -145,3 +166,49 @@ def report_detail_json(request, pk):
         'status': report.status,
         'description': report.description,
     })
+
+
+# =========================
+# API DETAIL
+# =========================
+def report_detail_api(request, pk):
+    report = get_object_or_404(Report, pk=pk)
+
+    return JsonResponse({
+        "id": report.id,
+        "title": report.title,
+        "description": report.description,
+        "status": report.status,
+    })
+
+
+# =========================
+# SEARCH
+# =========================
+def report_search(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if not request.user.is_admin:
+        return HttpResponseForbidden()
+
+    query = request.GET.get('q', '')
+    reports = Report.objects.filter(
+        Q(title__icontains=query) |
+        Q(category__icontains=query) |
+        Q(description__icontains=query) |
+        Q(location__icontains=query)
+    )
+
+    results = []
+    for r in reports:
+        results.append({
+            'id': r.id,
+            'title': r.title,
+            'category': r.category,
+            'location': r.location,
+            'status': r.status,
+            'description': r.description,
+        })
+
+    return JsonResponse({'results': results})

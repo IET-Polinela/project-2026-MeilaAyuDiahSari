@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card-custom">
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="/">Home</a>
+    </li>
+    <li class="breadcrumb-item active">
+        Reports
+    </li>
+  </ol>
+</nav>
+
+<h2 class="mb-4">Daftar Laporan</h2>
+
+<div class="mb-3">
+    <input
+        type="text"
+        id="searchInput"
+        class="form-control"
+        placeholder="Cari judul atau lokasi laporan..."
+    >
+</div>
+
+<a href="{% url 'add_report' %}" class="btn text-white mb-4" style="background:#a64254;">
+    + Tambah Laporan
+</a>
+
+{% if reports %}
+
+<div class="table-responsive">
+
+<table class="table table-striped table-bordered">
+<thead class="table-header-custom">
+        <tr>
+            <th>Judul</th>
+            <th>Lokasi</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+
+    <tbody id="reportTable">
+        {% for report in reports %}
+        <tr>
+            <td>{{ report.title }}</td>
+            <td>{{ report.location }}</td>
+
+            <td>
+                {% if report.status == "REPORTED" %}
+                    <span class="badge bg-danger">Reported</span>
+                {% elif report.status == "VERIFIED" %}
+                    <span class="badge bg-warning text-dark">Verified</span>
+                {% elif report.status == "IN_PROGRESS" %}
+                    <span class="badge bg-primary">In Progress</span>
+                {% else %}
+                    <span class="badge bg-success">Resolved</span>
+                {% endif %}
+            </td>
+
+            <td class="action-cell">
+                <div class="action-group">
+                    <button
+                        class="btn btn-sm btn-info detailBtn"
+                        data-id="{{ report.pk }}">
+                        Detail
+                    </button>
+
+                    <a href="{% url 'update_report' report.pk %}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'delete_report' report.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Yakin ingin menghapus laporan ini?')">
+                        Hapus
+                    </a>
+
+                    {% if report.status == 'REPORTED' %}
+                    <form method="post" action="{% url 'update_status' report.pk %}"
+                          class="action-form"
+                          onsubmit="return confirm('Yakin ingin mengubah status ke VERIFIED?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="VERIFIED">
+                        <button class="btn btn-sm btn-success">
+                            Verify
+                        </button>
+                    </form>
+
+                    {% elif report.status == 'VERIFIED' %}
+                    <form method="post" action="{% url 'update_status' report.pk %}"
+                          class="action-form"
+                          onsubmit="return confirm('Yakin ingin memproses laporan ini?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="IN_PROGRESS">
+                        <button class="btn btn-sm btn-primary">
+                            Process
+                        </button>
+                    </form>
+
+                    {% elif report.status == 'IN_PROGRESS' %}
+                    <form method="post" action="{% url 'update_status' report.pk %}"
+                          class="action-form"
+                          onsubmit="return confirm('Yakin ingin menyelesaikan laporan ini?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="RESOLVED">
+                        <button class="btn btn-sm btn-dark">
+                            Resolve
+                        </button>
+                    </form>
+
+                    {% else %}
+                        <span class="text-success fw-bold">✔ Selesai</span>
+                    {% endif %}
+                </div>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+</div>
+
+{% else %}
+
+<div class="text-center mt-5">
+
+    <h4 class="text-muted">Belum ada laporan</h4>
+
+    <p class="text-muted">
+        Silakan tambahkan laporan baru.
+    </p>
+
+    <a href="{% url 'add_report' %}" class="btn text-white mt-3" style="background:#a64254;">
+        Tambah Laporan
+    </a>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Laporan</h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="modalContent">
+                Loading...
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ✅ SEARCH — AJAX Request ke /search/?q=... (diperlukan oleh test UI-02) -->
+<script>
+let typingTimer;
+
+document.getElementById('searchInput').addEventListener('keyup', function () {
+    clearTimeout(typingTimer);
+    const keyword = this.value.trim();
+
+    typingTimer = setTimeout(function () {
+        // Kirim AJAX request ke endpoint /search/?q=keyword
+        fetch(`/search/?q=${encodeURIComponent(keyword)}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('reportTable');
+                tbody.innerHTML = '';
+
+                if (data.results.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Tidak ada hasil ditemukan.</td></tr>';
+                    return;
+                }
+
+                data.results.forEach(function(report) {
+                    const statusMap = {
+                        REPORTED: '<span class="badge bg-danger">Reported</span>',
+                        VERIFIED: '<span class="badge bg-warning text-dark">Verified</span>',
+                        IN_PROGRESS: '<span class="badge bg-primary">In Progress</span>',
+                        RESOLVED: '<span class="badge bg-success">Resolved</span>',
+                    };
+                    const statusBadge = statusMap[report.status] || `<span class="badge bg-secondary">${report.status}</span>`;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${report.title}</td>
+                            <td>${report.location}</td>
+                            <td>${statusBadge}</td>
+                            <td><span class="text-muted small">-</span></td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(err => console.error('Search error:', err));
+    }, 300);
+});
+</script>
+
+<script>
+document.querySelectorAll('.detailBtn').forEach(btn => {
+
+    btn.addEventListener('click', function() {
+
+        let id = this.dataset.id;
+
+        fetch(`/detail-json/${id}/`)
+        .then(response => response.json())
+        .then(data => {
+
+            const statusMap = {
+                REPORTED: { label: 'Reported', style: 'reported' },
+                VERIFIED: { label: 'Verified', style: 'verified' },
+                IN_PROGRESS: { label: 'In Progress', style: 'in-progress' },
+                RESOLVED: { label: 'Resolved', style: 'resolved' }
+            };
+
+            const statusInfo = statusMap[data.status] || { label: data.status, style: 'reported' };
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-key">Judul</div>
+                    <div class="detail-value">${data.title}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Kategori</div>
+                    <div class="detail-value">${data.category}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Lokasi</div>
+                    <div class="detail-value">${data.location}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Status</div>
+                    <div class="detail-value">
+                        <span class="detail-badge ${statusInfo.style}">${statusInfo.label}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-key">Deskripsi</div>
+                    <div class="detail-value">${data.description.replace(/\n/g, '<br>')}</div>
+                </div>
+            `;
+
+            new bootstrap.Modal(
+                document.getElementById('detailModal')
+            ).show();
+
+        });
+
+    });
+
+});
+</script>
+
+{% endblock %}

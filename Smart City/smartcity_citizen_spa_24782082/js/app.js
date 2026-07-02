@@ -7,7 +7,7 @@ let currentSearchKeyword = '';
 
 
 function updateNavbar() {
-    const navMenu = document.getElementById('nav-menu');
+    const navMenu = document.getElementById('nav-menus');
     const accessToken = localStorage.getItem('access_token');
 
     if (!navMenu) {
@@ -65,7 +65,7 @@ async function loadDashboardData(tab = currentTab, page = 1) {
         'GET'
     );
 
-    if (!result.ok) {
+    if (!result || !result.ok) {
         console.log(result.data);
         alert('Gagal mengambil data laporan.');
         return;
@@ -393,7 +393,7 @@ async function loadSummaryStats() {
         'GET'
     );
 
-    if (!result.ok) {
+    if (!result || !result.ok) {
         return;
     }
 
@@ -451,7 +451,7 @@ async function editDraft(id) {
         'GET'
     );
 
-    if (!result.ok) {
+    if (!result || !result.ok) {
         alert('Gagal mengambil data draft.');
         return;
     }
@@ -464,10 +464,10 @@ async function editDraft(id) {
         Edit Draft
     `;
 
-    document.getElementById('reportTitle').value = report.title;
-    document.getElementById('reportCategory').value = report.category;
-    document.getElementById('reportLocation').value = report.location;
-    document.getElementById('reportDescription').value = report.description;
+    document.getElementById('inputTitle').value = report.title;
+    document.getElementById('inputCategory').value = report.category;
+    document.getElementById('inputLocation').value = report.location;
+    document.getElementById('inputDescription').value = report.description;
 
     const modal = new bootstrap.Modal(
         document.getElementById('reportModal')
@@ -479,10 +479,10 @@ async function editDraft(id) {
 
 async function saveReport(asSubmit = false) {
     const payload = {
-        title: document.getElementById('reportTitle').value,
-        category: document.getElementById('reportCategory').value,
-        location: document.getElementById('reportLocation').value,
-        description: document.getElementById('reportDescription').value
+        title: document.getElementById('inputTitle').value,
+        category: document.getElementById('inputCategory').value,
+        location: document.getElementById('inputLocation').value,
+        description: document.getElementById('inputDescription').value
     };
 
     let endpoint = '/api/report/';
@@ -499,7 +499,7 @@ async function saveReport(asSubmit = false) {
         payload
     );
 
-    if (result.status !== 200 && result.status !== 201) {
+    if (!result || (result.status !== 200 && result.status !== 201)) {
         console.log(result.data);
         alert('Gagal menyimpan laporan.');
         return;
@@ -517,7 +517,7 @@ async function saveReport(asSubmit = false) {
             'PATCH'
         );
 
-        if (!submitResult.ok) {
+        if (!submitResult || !submitResult.ok) {
             console.log(submitResult.data);
             alert('Draft tersimpan, tetapi gagal diajukan.');
             return;
@@ -544,7 +544,7 @@ async function submitDraft(id) {
         'PATCH'
     );
 
-    if (!result.ok) {
+    if (!result || !result.ok) {
         console.log(result.data);
         alert('Gagal mengajukan laporan.');
         return;
@@ -558,7 +558,7 @@ async function submitDraft(id) {
 function setupReportForm() {
     const openButton = document.getElementById('openReportModal');
     const btnDraft = document.getElementById('btnDraft');
-    const btnSubmitReport = document.getElementById('btnSubmitReport');
+    const btnSubmitReport = document.getElementById('btnSubmit');
 
     if (openButton) {
         openButton.addEventListener('click', openReportModal);
